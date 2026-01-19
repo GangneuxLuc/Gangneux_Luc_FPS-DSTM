@@ -337,6 +337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StaminaBarManager
   playerController: {fileID: 1221539440}
   staminaBarImage: {fileID: 1107856838}
+  staminaBarBackgroundImage: {fileID: 819887679}
 --- !u!1 &947416012
 GameObject:
   m_ObjectHideFlags: 0

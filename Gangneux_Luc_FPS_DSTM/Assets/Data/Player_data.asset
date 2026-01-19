@@ -32,7 +32,7 @@ MonoBehaviour:
   landSound: {fileID: 0}
   staminaLevel: 100
   staminaMax: 100
-  staminaIncreaseRate: 1.5
+  staminaIncreaseRate: 7
   staminaDecreaseRate: 15
   sanityLevel: 100
   sanityDecreaseRate: 0

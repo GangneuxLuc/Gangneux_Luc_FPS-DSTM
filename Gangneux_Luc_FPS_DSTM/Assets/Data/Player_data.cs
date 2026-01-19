@@ -14,8 +14,14 @@ public class Player_data : ScriptableObject
     public float stepInterval;
     public AudioClip[] footstepSounds;
     public AudioClip landSound;
+
+    // Stamina fields (ajoutés pour compatibilité)
     public float staminaLevel;
-    public float staminaRecoverySpeed;
+    public float staminaMax;
+    public float staminaIncreaseRate; // récupération
+    public float staminaDecreaseRate; // décrémentation lors du sprint
+
+    // Sanity
     public float sanityLevel;
     public float sanityDecreaseRate;
     public float sanityIncreaseRate;

@@ -1,38 +1,34 @@
+using Character;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class StaminaBarManager : MonoBehaviour
 {
-    [SerializeField] GameObject playerController;
+    [SerializeField] private FPS_Character player;
+    [SerializeField] private Image staminaBarImage;
+    [SerializeField] private Image staminaBarBackgroundImage;
 
-    float stamina = 10;
-    float maxStamina = 100;
-    float staminaRegenRate;
-    public Image staminaBarImage;
-    public Image staminaBarBackgroundImage;
-    private bool isSprinting;
+   
 
     private void Start()
     {
-     
+        if (player != null) player.GetComponent<FPS_Character>();
     }
 
-
-    // Update is called once per frame
     void Update()
     {
-        
+        if (player == null) return;
 
-        stamina = playerController.GetComponent<FPS_Controller.FirstPersonController>().playerStaminaLevel;
-        maxStamina = playerController.GetComponent<FPS_Controller.FirstPersonController>().playerStaminaMax;
-        staminaBarImage.fillAmount = stamina / maxStamina;
+        float stamina = player.PlayerStaminaLevel;
+        float maxStamina = player.PlayerStaminaMax;
+        if (maxStamina <= 0f) maxStamina = 1f;
 
-    
+        if (staminaBarImage != null)
+            staminaBarImage.fillAmount = Mathf.Clamp01(stamina / maxStamina);
 
-        if (stamina < maxStamina)
-        { staminaBarImage.enabled = true; staminaBarBackgroundImage.enabled = true; }
-        else
-        { staminaBarImage.enabled = false; staminaBarBackgroundImage.enabled = false; }
+        bool show = stamina < maxStamina;
+        if (staminaBarImage != null) staminaBarImage.enabled = show;
+        if (staminaBarBackgroundImage != null) staminaBarBackgroundImage.enabled = show;
     }
 }

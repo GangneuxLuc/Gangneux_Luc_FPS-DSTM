@@ -13,27 +13,18 @@ MonoBehaviour:
   m_Name: Player_data
   m_EditorClassIdentifier: Assembly-CSharp::Player_data
   isWalking: 0
-  walkSpeed: 5
-  runSpeed: 10
-  runstepLenghten: 0.7
-  stickToGroundForce: 10
-  gravityMultiplier: 2
-  mouseLook:
-    XSensitivity: 2
-    YSensitivity: 2
-    clampVerticalRotation: 1
-    MinimumX: -90
-    MaximumX: 90
-    smooth: 0
-    smoothTime: 5
-    lockCursor: 1
-  stepInterval: 5
-  footstepSounds: []
-  landSound: {fileID: 0}
+  isSprinting: 0
+  walkSpeed: 3
+  sprintSpeed: 5
   staminaLevel: 100
   staminaMax: 100
-  staminaIncreaseRate: 7
-  staminaDecreaseRate: 15
-  sanityLevel: 100
+  staminaIncreaseRate: 1.5
+  staminaDecreaseRate: 5
+  sanityLevel: 0
   sanityDecreaseRate: 0
   sanityIncreaseRate: 0
+  sensitivityX: 5
+  sensitivityY: 3
+  minRotationY: -30
+  maxRotationY: 15
+  deadzone: 0.15

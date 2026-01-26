@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class StaminaBarManager : MonoBehaviour
 {
-    [SerializeField] private FPS_Character player;
+  /*  [SerializeField] private FPS_Character player;
     [SerializeField] private Image staminaBarImage;
     [SerializeField] private Image staminaBarBackgroundImage;
 
@@ -30,5 +30,5 @@ public class StaminaBarManager : MonoBehaviour
         bool show = stamina < maxStamina;
         if (staminaBarImage != null) staminaBarImage.enabled = show;
         if (staminaBarBackgroundImage != null) staminaBarBackgroundImage.enabled = show;
-    }
+    } */
 }

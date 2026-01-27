@@ -5,6 +5,7 @@ using Character;
 [CreateAssetMenu(fileName = "Player_data", menuName = "Scriptable Objects/Player_data")]
 public class Player_data : ScriptableObject
 {
+    //Gesttion des données du joueur : vitesse, endurance, santé mentale, etc.
     [Header("Player States and stats")]
     public bool isWalking;
     public bool isSprinting;
@@ -15,6 +16,7 @@ public class Player_data : ScriptableObject
     public float staminaIncreaseRate; // récupération
     public float staminaDecreaseRate; // décrémentation lors du sprint
     public float sanityLevel;
+    public float sanityMax;
     public float sanityDecreaseRate;
     public float sanityIncreaseRate;
 

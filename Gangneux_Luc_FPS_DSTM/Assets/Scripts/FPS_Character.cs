@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class Fps_Character : MonoBehaviour
 {
-   
-
+    // Script de mouvement du joueur avec gestion de l'endurance et de la santé mentale
     [Header("Input Values")]
     [SerializeField] private float Horizontal;
     [SerializeField] private float Vertical;
@@ -20,16 +19,19 @@ public class Fps_Character : MonoBehaviour
     [SerializeField] private float playerStaminaIncreaseRate; // récupération
     [SerializeField] private float playerStaminaDecreaseRate; // décrémentation lors du sprint
     [SerializeField] private float playerSanityLevel;
+    [SerializeField] private float playerSanityMax;
     [SerializeField] private float playerSanityDecreaseRate;
     [SerializeField] private float playerSanityIncreaseRate;
 
-    // Exposer des accesseurs publics en lecture seule pour d'autres scripts
+    // Exposer en publics en lecture seule pour d'autres scripts
     public float PlayerStaminaLevel => playerStaminaLevel;
     public float PlayerStaminaMax => playerStaminaMax;
+    public float PlayerSanityLevel => playerSanityLevel;
+    public float PlayerSanityMax => playerSanityMax;
     public bool PlayerIsSprinting => playerIsSprinting;
 
 
-    private void Awake()
+    private void Awake() // Initialisation des valeurs
     {
         // Récupère les valeurs depuis le ScriptableObject si assigné
         if (playerData != null)
@@ -43,6 +45,7 @@ public class Fps_Character : MonoBehaviour
             playerStaminaIncreaseRate = playerData.staminaIncreaseRate;
             playerStaminaDecreaseRate = playerData.staminaDecreaseRate;
             playerSanityLevel = playerData.sanityLevel;
+            playerSanityMax = playerData.sanityMax;
             playerSanityDecreaseRate = playerData.sanityDecreaseRate;
             playerSanityIncreaseRate = playerData.sanityIncreaseRate;
         }
@@ -50,12 +53,17 @@ public class Fps_Character : MonoBehaviour
         playerIsMoving = false;
     }
 
-    void Update()
+
+    void Update() // J'appelle mes méthodes à chaque frame
     {
-        HandleMovement();
+      HandleMovement();
+      Sanity();
+        playerStaminaMax = playerSanityLevel;
+      if (playerStaminaLevel > playerStaminaMax) playerStaminaLevel = playerStaminaMax;
+
     }
 
-    private void HandleMovement()
+    private void HandleMovement() // Gérer le mouvement du joueur
     {
         // Entrées instantanées (pas de lissage)
         float rawH = Input.GetAxisRaw("Horizontal");
@@ -91,11 +99,18 @@ public class Fps_Character : MonoBehaviour
             }
         }
 
+       
+
         float speed = playerIsSprinting ? playerSprintSpeed : playerWalkSpeed;
 
        transform.Translate(new Vector3(input.x, 0f, input.y) * speed * Time.deltaTime);
         playerIsMoving = input.sqrMagnitude > 0f;
 
+    }
+
+    private void Sanity() // Gérer la santé mentale du joueur
+    {
+        playerSanityLevel -= playerSanityDecreaseRate * Time.deltaTime;
     }
 }
 

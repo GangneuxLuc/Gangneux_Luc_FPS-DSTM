@@ -1,20 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
+using Character;
 using UnityEngine;
 using UnityEngine.UI;
 
 
-public class Health : MonoBehaviour
+public class SanityBarManager : MonoBehaviour
 {
-    public float sanity = 75f;
-    public float maxSanity = 100f;
+    [SerializeField] private Fps_Character player;
+    [SerializeField] private Image sanityBarImage;
+    [SerializeField] private Image sanityBarBackgroundImage;
 
-    public Image sanityBarImage;
 
 
-    // Update is called once per frame
-    void Update()
+    private void Start() // Récupération du script Fps_Character
     {
-        sanityBarImage.fillAmount = sanity / maxSanity;
+        if (player != null) player.GetComponent<Fps_Character>();
+    }
+
+    void Update() // Mise à jour de la barre de santé mentale
+    {
+        if (player == null) return;
+
+        float sanity = player.PlayerSanityLevel;
+        float maxsanity = player.PlayerSanityMax;
+        if (maxsanity <= 0f) maxsanity = 1f;
+
+        if (sanityBarImage != null)
+            sanityBarImage.fillAmount = Mathf.Clamp01(sanity / maxsanity);
+
+
     }
 }

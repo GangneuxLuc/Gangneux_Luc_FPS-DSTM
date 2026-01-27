@@ -15,13 +15,14 @@ MonoBehaviour:
   isWalking: 0
   isSprinting: 0
   walkSpeed: 3
-  sprintSpeed: 5
+  sprintSpeed: 7.5
   staminaLevel: 100
   staminaMax: 100
-  staminaIncreaseRate: 1.5
-  staminaDecreaseRate: 5
-  sanityLevel: 0
-  sanityDecreaseRate: 0
+  staminaIncreaseRate: 15
+  staminaDecreaseRate: 30
+  sanityLevel: 100
+  sanityMax: 100
+  sanityDecreaseRate: 2
   sanityIncreaseRate: 0
   sensitivityX: 5
   sensitivityY: 3

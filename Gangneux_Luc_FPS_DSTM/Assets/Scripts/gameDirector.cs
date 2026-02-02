@@ -13,37 +13,16 @@ public class gameDirector : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            InstantiateMoose();
-        }
+       
         if (player != null && player.PlayerSanityLevel < 60 && !mooseIsInstantiate)
         {
             Debug.Log("Instantiate moose");
-            InstantiateMoose();
+           
             mooseIsInstantiate = true;
         }
     }
 
-    void InstantiateMoose()
-    {
-        if (moosePrefab == null || player == null) return;
-
-        // Choisir une distance aléatoire dans l'intervalle et un angle aléatoire
-        float distance = Random.Range(spawnDistanceMin, spawnDistanceMax);
-        float angle = Random.Range(0f, Mathf.PI * 2f);
-        Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * distance;
-
-        // Position de départ (au niveau du joueur)
-        Vector3 spawnPos = player.transform.position + offset;
-
-
- 
-
-        Instantiate(moosePrefab, spawnPos , Quaternion.identity);
-        mooseIsInstantiate = true;
-    }
-
+  
     void PlayerDeath()
     {
         // Show death screen, pause the game and offer restart option

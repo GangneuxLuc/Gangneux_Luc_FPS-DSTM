@@ -4,9 +4,11 @@ using UnityEngine;
 public class Moose_Data : ScriptableObject
 {
     [Header("Moose States and stats")]
-    public float speed;
+    public float speed ;
     public float speedIncreaseRate;
     public float speedDecreaseRate;
     public float detectionRadius;
     public float detectionSpeed;
+    public float wanderRadius;
+    public float wanderInterval;
 }

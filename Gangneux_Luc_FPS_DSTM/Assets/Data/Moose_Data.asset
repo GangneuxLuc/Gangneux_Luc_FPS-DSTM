@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42586fc7f8cb8484dbdaab49a30eba14, type: 3}
   m_Name: Moose_Data
   m_EditorClassIdentifier: Assembly-CSharp::Moose_Data
-  speed: 0
+  speed: 3
   speedIncreaseRate: 0
   speedDecreaseRate: 0
-  detectionRadius: 0
+  detectionRadius: 50
   detectionSpeed: 0
+  wanderRadius: 75
+  wanderInterval: 2.5

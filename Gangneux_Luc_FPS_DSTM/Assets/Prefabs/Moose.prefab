@@ -149,7 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7055bc5bc81399945bbb127171dd4dc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AiMoose
-  player: {fileID: 6071564719941016264, guid: c7a1db50999b0144f8c777cea43ff50f, type: 3}
   moose: {fileID: 8239899899813716254}
-  mooseGoal: {fileID: 4829979514227222674, guid: c7a1db50999b0144f8c777cea43ff50f, type: 3}
+  player: {fileID: 4785942785230959580, guid: c7a1db50999b0144f8c777cea43ff50f, type: 3}
   mooseData: {fileID: 11400000, guid: 3a3bc00df9df0724c909359b0db93cb7, type: 2}

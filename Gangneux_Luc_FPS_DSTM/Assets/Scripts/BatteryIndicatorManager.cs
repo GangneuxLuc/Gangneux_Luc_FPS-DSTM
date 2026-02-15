@@ -4,7 +4,7 @@ using UnityEngine.UI;
 // A finir + rajouter une image dans l'UI
 public class BatteryIndicatorManager : MonoBehaviour
 {
-   [SerializeField] private Image BatteryIndicator;
+   [SerializeField] private Image batteryImage;
    [SerializeField] private TorchLightManager torchLightManager;
     void Start()
     {
@@ -15,7 +15,9 @@ public class BatteryIndicatorManager : MonoBehaviour
     }
     void Update()
     {
-        
+        float batteryLevel = torchLightManager.batteryLife;
+        float batteryMax = torchLightManager.batteryMax;
+        batteryImage.fillAmount = Mathf.Clamp01(batteryLevel / batteryMax);
     }
 
     

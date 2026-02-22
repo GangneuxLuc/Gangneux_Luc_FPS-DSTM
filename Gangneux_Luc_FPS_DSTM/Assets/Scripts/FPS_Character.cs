@@ -1,4 +1,7 @@
 using UnityEngine;
+using TMPro;
+using System.Collections;
+using System.Linq;
 
 public class Fps_Character : MonoBehaviour
 {
@@ -6,6 +9,11 @@ public class Fps_Character : MonoBehaviour
     [Header("Input Values")]
     [SerializeField] private float Horizontal;
     [SerializeField] private float Vertical;
+
+    [Header("Player Inventory")]
+    [SerializeField] private TorchLightManager torchLightManager;
+    [SerializeField] private TMP_Text Recordings; // UI pour afficher le nombre de records trouvés et restants
+    private int recordingsFound = 0; // Compteur de records trouvés
 
     [Header("Player States and stats")]
     [SerializeField] private Player_data playerData;
@@ -107,7 +115,39 @@ public class Fps_Character : MonoBehaviour
         playerIsMoving = input.sqrMagnitude > 0f;
 
     }
+    void Inventory () // Gérer l'inventaire du joueur (ramassage d'objets, utilisation, etc.)
+    {
+        // Cette méthode peut être développée pour gérer les interactions avec les objets dans le jeu
+    }
+    void OnCollisionEnter (Collision collision) // Gérer les collisions avec les ennemis ou les objets qui affectent la santé mentale
+    {
+        if (collision.gameObject.CompareTag("Batteries"))
+        {
+            playerSanityLevel += 20f; // Gain de santé mentale en ramassant les piles
+            if (playerSanityLevel > playerSanityMax) playerSanityLevel = playerSanityMax;
+            torchLightManager.BatteryLife +=50f; // Recharge la batterie de la lampe torche
+            Destroy(collision.gameObject); // Détruire l'objet après ramassage
+        }
+ 
+       if (collision.gameObject.CompareTag("Recording"))
+       {
+            recordingsFound++; // Incrémente le nombre de records trouvés
+            playerSanityLevel += 60f; // Gain de santé mentale en ramassant les enregistrements
+            if (playerSanityLevel > playerSanityMax) playerSanityLevel = playerSanityMax;
+            StartCoroutine(RecordingUI());
+            Recordings.text = recordingsFound + "/" + "6"; // Met à jour le texte de l'UI  
+            Destroy(collision.gameObject); // Détruire l'objet après ramassage
+              
+       }
+        
+    }
 
+    IEnumerator RecordingUI () // Coroutine pour afficher le nombre de records trouvés pendant un certain temps
+    {
+        Recordings.enabled = true;
+        yield return new WaitForSeconds(3f); // Affiche le texte pendant 3 secondes
+        Recordings.enabled = false;
+    }
     private void Sanity() // Gérer la santé mentale du joueur
     {
         playerSanityLevel -= playerSanityDecreaseRate * Time.deltaTime;

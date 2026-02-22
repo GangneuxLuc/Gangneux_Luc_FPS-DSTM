@@ -15,8 +15,8 @@ public class BatteryIndicatorManager : MonoBehaviour
     }
     void Update()
     {
-        float batteryLevel = torchLightManager.batteryLife;
-        float batteryMax = torchLightManager.batteryMax;
+        float batteryLevel = torchLightManager.BatteryLife;
+        float batteryMax = torchLightManager.BatteryMax;
         batteryImage.fillAmount = Mathf.Clamp01(batteryLevel / batteryMax);
     }
 

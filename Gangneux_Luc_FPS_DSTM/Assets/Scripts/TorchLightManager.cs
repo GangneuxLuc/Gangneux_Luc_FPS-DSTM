@@ -2,14 +2,16 @@ using UnityEngine;
 
 public class TorchLightManager : MonoBehaviour
 {
+
     // Gestion de la lampe torche du joueur
     [Header("Torch Light Settings")]
-   private Light torchLight;  
-   public float batteryLife = 100f;
-   public float batteryMax = 100f;
-   private float batteryDrainRate = 5f; 
-   private bool lightIsOn = false;
+    public float BatteryLife = 100f;
+    public float BatteryMax = 100f;
+    private float BatteryDrainRate = 2.5f;
+    private Light torchLight;  
+    private bool lightIsOn = false;
 
+  
     void Start() // Initialisation de la lampe torche
     {
         torchLight = GetComponent<Light>();
@@ -33,9 +35,9 @@ public class TorchLightManager : MonoBehaviour
     {
         if (lightIsOn)
         {
-            batteryLife -= batteryDrainRate * Time.deltaTime;
-            batteryLife = Mathf.Clamp(batteryLife, 0f, batteryMax);
-            if (batteryLife <= 0f)
+            BatteryLife -= BatteryDrainRate * Time.deltaTime;
+            BatteryLife = Mathf.Clamp(BatteryLife, 0f, BatteryMax);
+            if (BatteryLife <= 0f)
             {
                 torchLight.enabled = false;
                 lightIsOn = false;

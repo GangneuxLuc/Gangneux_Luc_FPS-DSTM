@@ -94,13 +94,7 @@ public class AiMoose : MonoBehaviour
         Debug.Log("Player Sanity Level: " + pSanityLevel);
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && pSanityLevel > 60 && mooseIsCalm) // Si le moose n'est pas en train de se déplacer et que le joueur a une santé mentale suffisante, il wander
         {
-            if (timer >= moosewanderInterval)
-            {
-                Vector3 newPos = GetRandomNavMeshLocation(moosewanderRadius);
-                agent.SetDestination(newPos);
-                timer = 0;
-                Debug.Log("OK");
-            }
+          
         }
         else if (pSanityLevel < 60)
         {
@@ -157,22 +151,6 @@ public class AiMoose : MonoBehaviour
         // Gardé pour extension : logique de poursuite si vous voulez qu'il chasse le joueur
     }
 
-    Vector3 GetRandomNavMeshLocation(float radius)
-    {
-        // Pick a random direction
-        Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += transform.position;
-
-        // Sample the NavMesh to find the nearest valid point
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
-        {
-            return hit.position;
-        }
-
-        // Fallback: stay in place if no valid point found
-        return transform.position;
-    }
 
     // Nouvelle méthode : retourne une position valide sur le NavMesh autour d'un centre donné (ex: joueur)
     Vector3 GetRandomNavMeshLocationAround(Vector3 center, float radius)

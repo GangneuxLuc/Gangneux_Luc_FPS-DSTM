@@ -14,15 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player_data
   isWalking: 0
   isSprinting: 0
-  walkSpeed: 3
-  sprintSpeed: 7.5
+  walkSpeed: 5
+  sprintSpeed: 8.5
   staminaLevel: 100
   staminaMax: 100
   staminaIncreaseRate: 15
-  staminaDecreaseRate: 30
+  staminaDecreaseRate: 20
   sanityLevel: 100
   sanityMax: 100
-  sanityDecreaseRate: 2
+  sanityMin: 0
+  sanityDecreaseRate: 0.5
   sanityIncreaseRate: 0
   sensitivityX: 5
   sensitivityY: 3

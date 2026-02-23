@@ -1,43 +1,65 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class gameDirector : MonoBehaviour
 {
     [SerializeField] private Fps_Character player;
     [SerializeField] private GameObject moosePrefab;
-
-    [Header("Spawn distance (meters)")]
-    [SerializeField] private float spawnDistanceMin = 8f;
-    [SerializeField] private float spawnDistanceMax = 12f;
-
     private bool mooseIsInstantiate;
 
-    private void Update()
+    [Header("Recordings Spawn Settings")]
+    public GameObject recordingsPrefab;
+    public Transform[] spawnPoints;
+
+    void Update()
     {
-       
-        if (player != null && player.PlayerSanityLevel < 60 && !mooseIsInstantiate)
+        InstantiateRecordings();
+    }
+
+    void InstantiateRecordings() // Instancie 5 enregistrements parmi les points de spawn définis lorsque la barre d'espace est pressée
+    {
+        if (!Input.GetKeyDown(KeyCode.Space))
+            return;
+
+        int spawnCount = Mathf.Min(5, spawnPoints.Length);
+        var usedIndices = new HashSet<int>();
+        int attempts = 0;
+        int maxAttempts = spawnPoints.Length * 3;
+
+        for (int spawned = 0; spawned < spawnCount && attempts < maxAttempts; attempts++)
         {
-            Debug.Log("Instantiate moose");
-           
-            mooseIsInstantiate = true;
+            int randomIndex = Random.Range(0, spawnPoints.Length);
+            if (usedIndices.Contains(randomIndex))
+                continue;
+
+            Vector3 spawnPos = spawnPoints[randomIndex].position;
+
+            // Vérifie s'il y a déjà un enregistrement proche (évite d'instancier deux fois au même endroit)
+            float checkRadius = 0.5f;
+            bool occupied = false;
+            Collider[] hits = Physics.OverlapSphere(spawnPos, checkRadius);
+            foreach (var hit in hits)
+            {
+                if (hit.gameObject.CompareTag(recordingsPrefab.tag) || hit.gameObject.name.Contains(recordingsPrefab.name))
+                {
+                    occupied = true;
+                    break;
+                }
+            }
+
+            if (occupied)
+                continue;
+
+            // Instancie à la position choisie
+            Instantiate(recordingsPrefab, spawnPos, Quaternion.identity);
+            usedIndices.Add(randomIndex);
+            spawned++;
         }
     }
 
-  
     void PlayerDeath()
     {
         // Show death screen, pause the game and offer restart option
-    }
-
-    void OnDrawGizmos()
-    {
-        // Visualiser la zone de spawn autour du joueur dans l'éditeur
-        Gizmos.color = Color.red;
-        Vector3 centre = player != null ? player.transform.position : transform.position;
-
-        // Cercle extérieur et intérieur (min/max)
-        Gizmos.DrawWireSphere(centre, spawnDistanceMax);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(centre, spawnDistanceMin);
     }
 
     private void PauseGame(bool isPaused)

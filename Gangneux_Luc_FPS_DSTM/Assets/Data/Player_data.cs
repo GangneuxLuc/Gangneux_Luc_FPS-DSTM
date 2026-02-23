@@ -17,6 +17,7 @@ public class Player_data : ScriptableObject
     public float staminaDecreaseRate; // décrémentation lors du sprint
     public float sanityLevel;
     public float sanityMax;
+    public float sanityMin;
     public float sanityDecreaseRate;
     public float sanityIncreaseRate;
 

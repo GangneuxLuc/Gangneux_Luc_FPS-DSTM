@@ -28,6 +28,7 @@ public class Fps_Character : MonoBehaviour
     [SerializeField] private float playerStaminaDecreaseRate; // décrémentation lors du sprint
     [SerializeField] private float playerSanityLevel;
     [SerializeField] private float playerSanityMax;
+    [SerializeField] private float playerSanityMin;
     [SerializeField] private float playerSanityDecreaseRate;
     [SerializeField] private float playerSanityIncreaseRate;
 
@@ -54,6 +55,7 @@ public class Fps_Character : MonoBehaviour
             playerStaminaDecreaseRate = playerData.staminaDecreaseRate;
             playerSanityLevel = playerData.sanityLevel;
             playerSanityMax = playerData.sanityMax;
+            playerSanityMin = playerData.sanityMin;
             playerSanityDecreaseRate = playerData.sanityDecreaseRate;
             playerSanityIncreaseRate = playerData.sanityIncreaseRate;
         }
@@ -104,6 +106,7 @@ public class Fps_Character : MonoBehaviour
             {
                 playerStaminaLevel += playerStaminaIncreaseRate * Time.deltaTime;
                 if (playerStaminaLevel > playerStaminaMax) playerStaminaLevel = playerStaminaMax;
+
             }
         }
 
@@ -151,6 +154,8 @@ public class Fps_Character : MonoBehaviour
     private void Sanity() // Gérer la santé mentale du joueur
     {
         playerSanityLevel -= playerSanityDecreaseRate * Time.deltaTime;
+        if (playerSanityLevel < playerSanityMin) playerSanityLevel = playerSanityMin;
+
     }
 }
 

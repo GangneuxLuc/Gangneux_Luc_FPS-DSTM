@@ -4,8 +4,8 @@ using UnityEngine.AI;
 public abstract class State : MonoBehaviour
 {
     public abstract State RunCurrentState();
-    
-   
+
+
 
     [Header("Moose States and stats")]
     [SerializeField] protected GameObject moose;
@@ -16,12 +16,9 @@ public abstract class State : MonoBehaviour
     protected float mooseDetectionRadius;
     protected float mooseDetectionSpeed;
 
-    [Header("Moose Behavior Statuts")]
-    protected bool mooseIsAlerted;
-    protected bool mooseIsMoving;
-    protected bool mooseIsChasing;
-    protected bool mooseIsCalm;
 
+    [Header("References")]
+    [SerializeField] protected GameObject player;
     protected NavMeshAgent agent;
     protected float currentOrbitAngle;
 
@@ -32,6 +29,7 @@ public abstract class State : MonoBehaviour
     public float moosewanderInterval;
     protected virtual void Awake()
     {
+
         agent = moose.GetComponent<NavMeshAgent>();
         if (agent == null)
         {
@@ -53,11 +51,4 @@ public abstract class State : MonoBehaviour
 
     }
 
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

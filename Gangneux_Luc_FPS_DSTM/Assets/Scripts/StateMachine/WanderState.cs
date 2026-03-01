@@ -1,47 +1,78 @@
-using UnityEditor.Rendering;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class WanderState : State
 {
+    [Header("Wander State Settings")]
     public AlertState alertState;
-    public bool canSeeThePlayer;
+    public bool canSmellPlayer;
+    private bool isWandering;
+    private Coroutine wanderCoroutine;
 
+
+  
     private void Start()
     {
-        Debug.Log("Entering WanderState...");
         timer = moosewanderInterval;
+        isWandering = false;
+        canSmellPlayer = false;
 
     }
-    
 
 
     public override State RunCurrentState()
     {
-            Debug.Log("Running WanderState...");
-        if (canSeeThePlayer)
+        // Démarre la coroutine une seule fois
+        if (!isWandering)
         {
-                return alertState;
+            wanderCoroutine = StartCoroutine(WanderBehavior());
+            isWandering = true;
         }
-        else 
+        // Si le joueur est vu, on stoppe les coroutines et on change d'état
+        if (canSmellPlayer)
         {
-             return this;
+            if (wanderCoroutine != null)
+            {
+                StopCoroutine(wanderCoroutine);
+                wanderCoroutine = null;
+            }
+
+            isWandering = false;
+            canSmellPlayer = false;
+            return alertState;
+            
+
         }
+
+        return this;
     }
-    void Update()
+
+    IEnumerator WanderBehavior()
     {
-       
-        timer = timer + Time.deltaTime;
-        Debug.Log("On rentre dans l'update du WanderState");
-        if (timer >= moosewanderInterval)
+        while (!canSmellPlayer)
         {
-            Debug.Log("Wandering...");
-            Vector3 newPos = GetRandomNavMeshLocation(moosewanderRadius);
-            agent.SetDestination(newPos);
-            timer = 0;
-            Debug.Log("OK");
+            // Protection : si la condition change durant la boucle, on sort proprement
+            if (canSmellPlayer)
+            {
+                break;
+            }
+
+            timer = timer + Time.deltaTime;
+            if (timer >= moosewanderInterval)
+            {
+                Vector3 newPos = GetRandomNavMeshLocation(moosewanderRadius);
+                agent.SetDestination(newPos);
+                timer = 0;
+            }
+
+            yield return null; // attend la frame suivante pour éviter une boucle serrée
         }
-       
+
+        // Nettoyage après arrêt de la coroutine
+        isWandering = false;
+        wanderCoroutine = null;
     }
 
     Vector3 GetRandomNavMeshLocation(float radius)
@@ -62,4 +93,13 @@ public class WanderState : State
         return transform.position;
     }
 
+   void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Player detected in WanderState!");
+            canSmellPlayer = true;
+        }
+    }
+   
 }

@@ -17,5 +17,5 @@ MonoBehaviour:
   speedDecreaseRate: 0
   detectionRadius: 50
   detectionSpeed: 0
-  wanderRadius: 50
+  wanderRadius: 25
   wanderInterval: 5

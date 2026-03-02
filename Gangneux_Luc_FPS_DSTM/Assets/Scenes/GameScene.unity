@@ -967,11 +967,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84199ca3bd334c745acb494622a4f7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  sphereCastRadius: 0.4
-  range: 45
+  sphereCastRadius: 0.842
+  range: 38.7
   layerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1
 --- !u!1001 &480997501
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -11,14 +11,11 @@ public class WanderState : State
     private bool isWandering;
     private Coroutine wanderCoroutine;
 
-
-  
     private void Start()
     {
         timer = moosewanderInterval;
         isWandering = false;
         canSmellPlayer = false;
-
     }
 
 
@@ -42,10 +39,7 @@ public class WanderState : State
             isWandering = false;
             canSmellPlayer = false;
             return alertState;
-            
-
         }
-
         return this;
     }
 
@@ -53,12 +47,6 @@ public class WanderState : State
     {
         while (!canSmellPlayer)
         {
-            // Protection : si la condition change durant la boucle, on sort proprement
-            if (canSmellPlayer)
-            {
-                break;
-            }
-
             timer = timer + Time.deltaTime;
             if (timer >= moosewanderInterval)
             {
@@ -93,7 +81,43 @@ public class WanderState : State
         return transform.position;
     }
 
-   void OnTriggerEnter(Collider other)
+    void SmellZone()
+    {
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * mooseDetectionRadius, Color.red );
+
+        if (Physics.SphereCast(ray, 0.5f, out hit, mooseDetectionRadius))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.Log("Player detected in SmellZone!");
+                canSmellPlayer = true;
+            }
+        }
+
+        /* if (Physics.Raycast(ray, out hit, mooseDetectionRadius))
+          {
+              if (hit.collider.CompareTag("Player"))
+              {
+                  Debug.Log("Player detected in SmellZone!");
+                  canSmellPlayer = true;
+              }
+          }
+        */
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("Testing SmellZone...");
+           // SmellZone();
+        }
+    }
+
+
+    void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -101,5 +125,7 @@ public class WanderState : State
             canSmellPlayer = true;
         }
     }
+
    
 }
+

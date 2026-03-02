@@ -16,22 +16,21 @@ public class AlertState : State
 
     private Coroutine alertCoroutine;
     private Vector3 lastKnownPlayerPosition;
-    private bool requestChase;
+    private bool isChasing;
 
     public override State RunCurrentState()
     {
         // Si on vient d'être signalé, démarre le comportement d'alerte (patrouille)
-        if (isPlayerSpotted && alertCoroutine == null)
+        if (isPlayerSpotted)
         {
-            isPlayerSpotted = false;
-            requestChase = false;
+            isChasing = false;
             alertCoroutine = StartCoroutine(AlertBehavior());
         }
 
         // Si la coroutine a demandé la transition vers chase, on y va
-        if (requestChase)
+        if (isChasing)
         {
-            requestChase = false;
+            isChasing = false;
             return chaseState;
         }
 
@@ -40,85 +39,44 @@ public class AlertState : State
 
     IEnumerator AlertBehavior()
     {
-        // mémorise la position où le joueur a été senti
-        if (player != null)
-            lastKnownPlayerPosition = player.transform.position;
 
-        float startTime = Time.time;
-
-        Debug.Log($"AlertBehavior started around {lastKnownPlayerPosition}");
-
-        while (Time.time - startTime < alertDuration)
+        while (!isChasing)
         {
-            // Choisit une destination aléatoire dans la zone d'alerte
-            Vector3 dest = GetRandomNavMeshLocationAround(lastKnownPlayerPosition, patrolRadius);
-            agent.SetDestination(dest);
-
-            float waitTimer = 0f;
-            // Attendre d'atteindre la destination ou un délai maximum
-            while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
+            timer = timer + Time.deltaTime;
+            if (timer >= moosewanderInterval)
             {
-                // Vérifie si l'agent voit le joueur pendant la patrouille
-                if (player != null)
-                {
-                    Vector3 origin = transform.position + Vector3.up * eyeHeight;
-                    Vector3 toPlayer = player.transform.position - origin;
-                    float dist = toPlayer.magnitude;
-                    Vector3 dir = toPlayer.normalized;
-
-                    // Trace pour debug
-                    Debug.DrawRay(origin, dir * Mathf.Min(dist, mooseDetectionRadius), Color.yellow);
-
-                    RaycastHit hit;
-                    if (Physics.Raycast(origin, dir, out hit, mooseDetectionRadius))
-                    {
-                        if (hit.collider != null && (hit.collider.gameObject.CompareTag("Player") || hit.collider.transform.root.gameObject.CompareTag("Player")))
-                        {
-                            Debug.Log("AlertState: player seen during patrol -> request chase");
-                            requestChase = true;
-                            // stop patrol immediately
-                            alertCoroutine = null;
-                            yield break;
-                        }
-                    }
-                }
-
-                // Timeout pour ne pas rester bloqué trop longtemps si agent ne peut atteindre la cible
-                waitTimer += Time.deltaTime;
-                if (waitTimer > 5f) break;
-
-                yield return null;
+                Vector3 newPos = GetNearPlayerNavMeshLocation(moosewanderRadius);
+                agent.SetDestination(newPos);
+                timer = 0;
             }
 
-            // Pause courte entre destinations
-            yield return new WaitForSeconds(patrolInterval);
+            yield return null; // attend la frame suivante pour éviter une boucle serrée
         }
-
-        Debug.Log("AlertBehavior finished without spotting player again.");
-        alertCoroutine = null;
     }
 
-    private Vector3 GetRandomNavMeshLocationAround(Vector3 center, float radius)
+    Vector3 GetNearPlayerNavMeshLocation(float radius)
     {
+        Debug.Log("Finding random NavMesh location...");
+        // Pick a random direction
         Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += center;
+        randomDirection += transform.position;
 
+        // Sample the NavMesh to find the nearest valid point
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
         {
             return hit.position;
         }
 
-        // fallback : position actuelle
+        // Fallback: stay in place if no valid point found
         return transform.position;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             isPlayerSpotted = true;
-            lastKnownPlayerPosition = other.transform.position;
+            Debug.Log("Player Spotted"); 
         }
     }
 }

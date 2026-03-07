@@ -11,13 +11,19 @@ public class WanderState : State
     private bool isWandering;
     private Coroutine wanderCoroutine;
 
+    [Header("Detection Settings")]
+    [SerializeField] private string playerTag = "Player";
+    [SerializeField] private float eyeHeight = 1.2f;
+    [SerializeField] private float smellCheckInterval = 0.2f; // intervalle entre vérifs
+    [SerializeField] private float smellTimer;
+
     private void Start()
     {
         timer = moosewanderInterval;
         isWandering = false;
         canSmellPlayer = false;
+        smellTimer = 0f;
     }
-
 
     public override State RunCurrentState()
     {
@@ -27,19 +33,26 @@ public class WanderState : State
             wanderCoroutine = StartCoroutine(WanderBehavior());
             isWandering = true;
         }
-        // Si le joueur est vu, on stoppe les coroutines et on change d'état
+
+        // Si le joueur est senti, on stoppe les coroutines, on désactive ce State et on active l'AlertState
         if (canSmellPlayer)
         {
+            // Stoppe la coroutine de wandering proprement
             if (wanderCoroutine != null)
             {
                 StopCoroutine(wanderCoroutine);
                 wanderCoroutine = null;
             }
 
+            // Nettoyage d'état interne
             isWandering = false;
+
+            // Réinitialise le flag local si besoin (ne le remettez pas true ici)
             canSmellPlayer = false;
+         
             return alertState;
         }
+
         return this;
     }
 
@@ -60,6 +73,12 @@ public class WanderState : State
 
         // Nettoyage après arrêt de la coroutine
         isWandering = false;
+
+        if (!isWandering)
+        {
+            agent.ResetPath(); // stoppe le mouvement actuel pour éviter les comportements non voulus lors de la transition vers l'AlertState
+        }
+       
         wanderCoroutine = null;
     }
 
@@ -70,7 +89,7 @@ public class WanderState : State
         Vector3 randomDirection = Random.insideUnitSphere * radius;
         randomDirection += transform.position;
 
-        // Sample the NavMesh to find the nearest valid point
+        // Sample the NavMesh to find le point valide le plus proche
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
         {
@@ -83,49 +102,57 @@ public class WanderState : State
 
     void SmellZone()
     {
-        RaycastHit hit;
-        Ray ray = new Ray(transform.position, transform.forward);
-        Debug.DrawRay(ray.origin, ray.direction * mooseDetectionRadius, Color.red );
+        // Interprétation : l'utilisateur veut une sphère dont le DIAMÈTRE == mooseDetectionRadius
+        float detectionRadius = mooseDetectionRadius * 0.5f;
+        Vector3 center = transform.position + Vector3.up * eyeHeight;
 
-        if (Physics.SphereCast(ray, 0.5f, out hit, mooseDetectionRadius))
+        // Debug visuel court (Scene view)
+        Debug.DrawLine(center, center + Vector3.up * detectionRadius, Color.magenta, 0.1f);
+
+        // OverlapSphere détecte tous les colliders dans la sphère
+        Collider[] hits = Physics.OverlapSphere(center, detectionRadius);
+        foreach (var col in hits)
         {
-            if (hit.collider.CompareTag("Player"))
+            if (col == null) continue;
+
+            GameObject hitObj = col.gameObject;
+            // Supporte le tag sur l'objet touché ou sur la racine (child collider)
+            if (hitObj.CompareTag(playerTag) || col.transform.root.gameObject.CompareTag(playerTag))
             {
-                Debug.Log("Player detected in SmellZone!");
+                Debug.Log("Player detected in SmellZone (OverlapSphere) on: " + hitObj.name);
                 canSmellPlayer = true;
+                return;
             }
         }
-
-        /* if (Physics.Raycast(ray, out hit, mooseDetectionRadius))
-          {
-              if (hit.collider.CompareTag("Player"))
-              {
-                  Debug.Log("Player detected in SmellZone!");
-                  canSmellPlayer = true;
-              }
-          }
-        */
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        // Appel périodique de la vérification pour économiser les performances
+        smellTimer += Time.deltaTime;
+        if (smellTimer >= smellCheckInterval)
         {
-            Debug.Log("Testing SmellZone...");
-           // SmellZone();
+            smellTimer = 0f;
+            SmellZone();
         }
     }
-
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Player detected in WanderState!");
-            canSmellPlayer = true;
+            Debug.Log("Player detected in WanderState (OnTriggerEnter)!");
+            
         }
     }
 
-   
+    private void OnDrawGizmos()
+    {
+        // Affiche la zone de détection dans l'éditeur (diamètre = mooseDetectionRadius)
+        float detectionRadius = mooseDetectionRadius * 0.5f;
+        Vector3 center = transform.position + Vector3.up * eyeHeight;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(center, detectionRadius);
+    }
 }
 

@@ -13,7 +13,7 @@ public class BatteryIndicatorManager : MonoBehaviour
             torchLightManager = GetComponent<TorchLightManager>();
         }
     }
-    void Update()
+    void Update() // Met à jour l'indicateur de batterie en fonction du niveau actuel
     {
         float batteryLevel = torchLightManager.BatteryLife;
         float batteryMax = torchLightManager.BatteryMax;

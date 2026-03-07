@@ -16,25 +16,24 @@ public abstract class State : MonoBehaviour
     protected float mooseDetectionRadius;
     protected float mooseDetectionSpeed;
 
-
     [Header("References")]
     [SerializeField] protected GameObject player;
     protected NavMeshAgent agent;
-    protected float currentOrbitAngle;
-
+    protected gameDirector gameDirector;
 
     [Header("Wandering Settings")]
     public float timer;
     public float moosewanderRadius;
     public float moosewanderInterval;
+
+    [Header("Game Over")]
+    public bool isPlayerDead= false;
     protected virtual void Awake()
     {
-
         agent = moose.GetComponent<NavMeshAgent>();
-        if (agent == null)
-        {
-            Debug.LogError("State: NavMeshAgent manquant sur le GameObject.");
-        }
+        player = GameObject.FindGameObjectWithTag("Player");
+        gameDirector = GameObject.FindAnyObjectByType<gameDirector>();
+
         timer = moosewanderInterval;
         if (mooseData != null)
         {
@@ -45,10 +44,7 @@ public abstract class State : MonoBehaviour
             mooseDetectionSpeed = mooseData.detectionSpeed;
             moosewanderRadius = mooseData.wanderRadius;
             moosewanderInterval = mooseData.wanderInterval;
-            // agent.speed = mooseSpeed;
+            agent.speed = mooseSpeed;
         }
-
-
-    }
-
+    }  
 }

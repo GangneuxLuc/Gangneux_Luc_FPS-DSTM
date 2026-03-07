@@ -27,6 +27,6 @@ MonoBehaviour:
   sanityIncreaseRate: 0
   sensitivityX: 5
   sensitivityY: 3
-  minRotationY: -50
-  maxRotationY: 50
+  minRotationY: -75
+  maxRotationY: 75
   deadzone: 0.15

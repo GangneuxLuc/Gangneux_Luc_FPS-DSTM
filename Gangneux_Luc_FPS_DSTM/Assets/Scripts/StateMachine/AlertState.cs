@@ -4,79 +4,111 @@ using UnityEngine.AI;
 
 public class AlertState : State
 {
-    [Header("Alert State Settings")]
     public ChaseState chaseState;
-    public bool isPlayerSpotted;
-
-    [Header("Patrol Settings")]
-    [SerializeField] private float patrolRadius = 8f;
-    [SerializeField] private float patrolInterval = 0.5f;
-    [SerializeField] private float alertDuration = 8f;
-    [SerializeField] private float eyeHeight = 1.2f;
-
+    public bool canSeePlayer;
+    private bool isPatrolling;
     private Coroutine alertCoroutine;
-    private Vector3 lastKnownPlayerPosition;
-    private bool isChasing;
+
+    [Header("Detection")]
+    [SerializeField] private float eyeHeight = 1.2f;
+    [SerializeField] private float fovAngle = 90f; // angle de vision devant le moose
 
     public override State RunCurrentState()
     {
-        // Si on vient d'être signalé, démarre le comportement d'alerte (patrouille)
-        if (isPlayerSpotted)
+        if (canSeePlayer)
         {
-            isChasing = false;
-            alertCoroutine = StartCoroutine(AlertBehavior());
-        }
-
-        // Si la coroutine a demandé la transition vers chase, on y va
-        if (isChasing)
-        {
-            isChasing = false;
+            if (alertCoroutine != null)
+            {
+                canSeePlayer = false; // reset pour éviter de rester bloqué en chase
+                StopCoroutine(alertCoroutine);
+                alertCoroutine = null;
+            }
             return chaseState;
         }
-
-        return this;
+        else
+        {
+            if (alertCoroutine == null)
+            {
+                alertCoroutine = StartCoroutine(AlertBehavior());
+            }
+            return this;
+        }
     }
 
     IEnumerator AlertBehavior()
     {
+        isPatrolling = true;
 
-        while (!isChasing)
+        // boucle principale : patrouille et détection chaque frame
+        while (!canSeePlayer)
         {
-            timer = timer + Time.deltaTime;
-            if (timer >= moosewanderInterval)
+            // Déplace l'agent vers une destination proche (si besoin)
+            if (agent != null && (agent.pathPending == false && agent.remainingDistance <= agent.stoppingDistance))
             {
-                Vector3 newPos = GetNearPlayerNavMeshLocation(moosewanderRadius);
-                agent.SetDestination(newPos);
-                timer = 0;
+                Vector3 dest = GetNearPlayerNavMeshLocation(transform.position, moosewanderRadius);
+                agent.SetDestination(dest);
             }
 
-            yield return null; // attend la frame suivante pour éviter une boucle serrée
+            // Vérification du joueur devant le moose
+            PlayerDetection();
+
+            yield return null;
         }
+
+        isPatrolling = false;
+
+        if (!isPatrolling)
+        {
+            agent.ResetPath(); // stoppe le mouvement actuel pour éviter les comportements non voulus lors de la transition vers le ChaseState
+        }
+        alertCoroutine = null;
     }
 
-    Vector3 GetNearPlayerNavMeshLocation(float radius)
+    // Renvoie une position Navigable proche du centre donné
+    Vector3 GetNearPlayerNavMeshLocation(Vector3 center, float radius)
     {
-        Debug.Log("Finding random NavMesh location...");
-        // Pick a random direction
         Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += transform.position;
+        randomDirection += center;
 
-        // Sample the NavMesh to find the nearest valid point
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
         {
             return hit.position;
         }
 
-        // Fallback: stay in place if no valid point found
         return transform.position;
     }
-    private void OnTriggerEnter(Collider other)
+
+    // Détecte si le joueur est devant le moose (angle + ligne de vue + distance)
+    void PlayerDetection()
     {
-        if (other.CompareTag("Player"))
+        Vector3 origin = transform.position + Vector3.up * eyeHeight;
+        Vector3 toPlayer = player.transform.position - origin;
+        float distanceToPlayer = toPlayer.magnitude;
+
+        // on considère mooseDetectionRadius comme DIAMÈTRE -> radius = diameter / 2
+        float detectionRadius = mooseDetectionRadius * 0.5f;
+        if (distanceToPlayer > detectionRadius) return;
+
+        Vector3 dir = toPlayer.normalized;
+
+        // vérifie l'angle frontal
+        float halfFov = fovAngle * 0.5f;
+        if (Vector3.Angle(transform.forward, dir) > halfFov) return;
+
+        // vérifie la ligne de vue (raycast)
+        RaycastHit hit;
+        if (Physics.Raycast(origin, dir, out hit, detectionRadius))
         {
-            isPlayerSpotted = true;
-            Debug.Log("Player Spotted"); 
+            if (hit.collider != null && (hit.collider.gameObject.CompareTag("Player") || hit.collider.transform.root.gameObject.CompareTag("Player")))
+            {
+                Debug.DrawRay(origin, dir * detectionRadius, Color.green, 0.2f);
+                canSeePlayer = true;
+                Debug.Log($"AlertState: canSeePlayer set TRUE on '{gameObject.name}' (id {GetInstanceID()})");
+                return;
+            }
         }
+
+        Debug.DrawRay(origin, dir * detectionRadius, Color.red, 0.2f);
     }
 }

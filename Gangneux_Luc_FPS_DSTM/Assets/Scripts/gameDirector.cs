@@ -1,26 +1,52 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class gameDirector : MonoBehaviour
 {
+    [Header("Scene and UI Settings")]
+    public string sceneName;
+    public GameObject gameOverUIPrefab;
+    public GameObject PauseMenu;
+
+    [Header("References")]
     [SerializeField] private Fps_Character player;
     [SerializeField] private GameObject moosePrefab;
-    private bool mooseIsInstantiate;
+    
+
+    // contrôle global des entrées
+    public static bool inputsEnabled = true;
+    private bool isPaused = false;
+    GameObject currentPauseMenu;
+
 
     [Header("Recordings Spawn Settings")]
     public GameObject recordingsPrefab;
     public Transform[] spawnPoints;
 
-    void Update()
+    [Header("Player Infos")]
+    public bool isPlayerDead;
+
+
+    private void Start()
     {
         InstantiateRecordings();
     }
 
-    void InstantiateRecordings() // Instancie 5 enregistrements parmi les points de spawn définis lorsque la barre d'espace est pressée
+    private void Awake()
     {
-        if (!Input.GetKeyDown(KeyCode.Space))
-            return;
+        
+    }
 
+    void Update()
+    { 
+        HandlePauseInput();     
+        GameOver();
+    }
+
+    void InstantiateRecordings() // Instancie 5 enregistrements parmi les points de spawn définis 
+    {
         int spawnCount = Mathf.Min(5, spawnPoints.Length);
         var usedIndices = new HashSet<int>();
         int attempts = 0;
@@ -57,22 +83,93 @@ public class gameDirector : MonoBehaviour
         }
     }
 
-    void PlayerDeath()
+    private void HandlePauseInput()
     {
-        // Show death screen, pause the game and offer restart option
+        // Empêche d'ouvrir le menu de pause si l'écran Game Over est actif
+        if (isPlayerDead) return;
+
+        if (Input.GetKeyDown(KeyCode.Escape) && isPaused == false)
+        {
+           PauseGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && isPaused == true)
+        {
+           ResumeGame();
+        }
     }
 
-    private void PauseGame(bool isPaused)
+    private void PauseGame()
     {
-        if (isPaused)
+        isPaused = true;
+        Time.timeScale = 0f;
+        inputsEnabled = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (PauseMenu == null) return;
+
+        // Instancier une seule fois
+        if (currentPauseMenu == null)
         {
-            Time.timeScale = 0f;
-            // Show pause menu UI
+            currentPauseMenu = Instantiate(PauseMenu);
+            var canvas = GameObject.Find("UI") ?? GameObject.Find("Canvas");
+            if (canvas != null)
+            {
+                currentPauseMenu.transform.SetParent(canvas.transform, false); // Place le UI sous le Canvas
+            }
+
         }
-        else
+    }
+
+    public void ResumeGame()
+    {
+        currentPauseMenu = GameObject.FindWithTag("PauseMenu");
+        isPaused = false;
+        Time.timeScale = 1f;
+        inputsEnabled = true;
+        Destroy(currentPauseMenu);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        currentPauseMenu = null;
+    }
+     
+    
+    public void GameOver()
+    {
+        if (isPlayerDead)
         {
-            Time.timeScale = 1f;
-            // Hide pause menu UI
+            isPlayerDead = false; // Reset the flag to prevent multiple triggers
+            Debug.Log("Game Over triggered in gameDirector.");
+            Time.timeScale = 0f; // Freeze the game
+            inputsEnabled = false; // Désactive les entrées globalement
+
+            // Rendre le curseur visible pour permettre le clic sur les boutons UI
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            GameObject ui = Instantiate(gameOverUIPrefab); // Instancie le prefab
+            // Cherche "UI" puis "Canvas" comme fallback
+            var canvas = GameObject.Find("UI") ?? GameObject.Find("Canvas");
+            if (canvas != null)
+            {
+                ui.transform.SetParent(canvas.transform, false); // Place le UI sous le Canvas
+            }
         }
+    }
+    public void RestartGame()
+    {
+        Time.timeScale = 1f; // Reprend le temps
+        inputsEnabled = true; // Réactive les entrées globalement
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Recharge la scène actuelle
+    }
+    public void TitleStartGame()
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

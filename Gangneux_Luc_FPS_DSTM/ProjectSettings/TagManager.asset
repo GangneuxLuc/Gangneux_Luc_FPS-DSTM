@@ -7,6 +7,8 @@ TagManager:
   - Batteries
   - Recording
   - Moose
+  - GameOverScreen
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

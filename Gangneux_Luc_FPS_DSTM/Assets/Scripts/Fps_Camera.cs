@@ -9,9 +9,6 @@ namespace Character
         [SerializeField] private float mouseX;
         [SerializeField] private float mouseY;
 
-
-       
-
         [SerializeField] private Player_data playerData;
         [Header("Camera Settings")]
         [SerializeField] private float playerSensitivityX;
@@ -46,11 +43,13 @@ namespace Character
         void Update()
         {
             HandleMouseLook();
-
         }
 
         private void HandleMouseLook()
         {
+            // Utilise le flag global défini dans gameDirector pour bloquer les entrées
+            if (!gameDirector.inputsEnabled) return;
+
             mouseX = Input.GetAxis("Mouse X");
             mouseY = Input.GetAxis("Mouse Y");
 
@@ -59,15 +58,13 @@ namespace Character
             rotationY = Mathf.Clamp(rotationY, playerMinRotationY, playerMaxRotationY);
 
             // Applique la rotation directement sur la caméra
-           transform.localRotation = Quaternion.Euler(rotationY, rotationX, 0f);
+            transform.localRotation = Quaternion.Euler(rotationY, rotationX, 0f);
             // Applique la rotation horizontale au corps du joueur
             if (playerBody != null)
             {
                 transform.localRotation = Quaternion.Euler(rotationY, 0f, 0f);
                 playerBody.Rotate(Vector3.up * mouseX * playerSensitivityX);
             }
-
         }
-    }
-      
+    }  
 }

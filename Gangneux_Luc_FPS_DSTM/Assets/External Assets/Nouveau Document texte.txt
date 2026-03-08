@@ -1,4 +1,4 @@
-SOURCE
+ASSETS SOURCE
 Cabin :
 https://assetstore.unity.com/packages/3d/environments/cabin-environment-98014
 
@@ -19,5 +19,21 @@ https://assetstore.unity.com/packages/3d/environments/nature-starter-kit-2-52977
 
 Ambiance :
 https://pixabay.com/sound-effects/search/dark%20forest/
+
+Flashlight :
+https://assetstore.unity.com/packages/3d/props/furniture/electric-torch-224071
+
+Hands :
+https://sketchfab.com/3d-models/fps-arms-9452ce4cddde4110a4fd73e555a8e412
+
+Batteries :
+https://sketchfab.com/3d-models/aa-batteries-6e22bb9e949542bf801e26055987b46a#download
+
+Tent :
+
+Casset :
+
+
+
 
 

@@ -14,7 +14,7 @@ public class Fps_Character : MonoBehaviour
     [Header("Player Inventory")]
     [SerializeField] private TorchLightManager torchLightManager;
     [SerializeField] private TMP_Text Recordings; // UI pour afficher le nombre de records trouvés et restants
-    private int recordingsFound = 0; // Compteur de records trouvés
+    public int recordingsFound = 0; // Compteur de records trouvés
 
     [Header("Player States and stats")]
     [SerializeField] private Player_data playerData;
@@ -93,7 +93,7 @@ public class Fps_Character : MonoBehaviour
 
     private void HandleMovement() // Gérer le mouvement du joueur
     {
-        if (!gameDirector.inputsEnabled) return;
+       // if (!gameDirector.inputsEnabled) return;
         // Entrées instantanées (pas de lissage)
         float rawH = Input.GetAxisRaw("Horizontal");
         float rawV = Input.GetAxisRaw("Vertical");

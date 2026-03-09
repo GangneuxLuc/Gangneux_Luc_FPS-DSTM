@@ -27,7 +27,7 @@ public abstract class State : MonoBehaviour
     public float moosewanderInterval;
 
     [Header("Game Over")]
-    public bool isPlayerDead= false;
+    public bool isPlayerDead = false;
     protected virtual void Awake()
     {
         agent = moose.GetComponent<NavMeshAgent>();
@@ -46,5 +46,6 @@ public abstract class State : MonoBehaviour
             moosewanderInterval = mooseData.wanderInterval;
             agent.speed = mooseSpeed;
         }
-    }  
+    }
+
 }

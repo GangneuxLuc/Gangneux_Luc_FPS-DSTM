@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.AppUI.UI;
 using UnityEngine;
 
 public class StateManager : MonoBehaviour
@@ -5,18 +7,34 @@ public class StateManager : MonoBehaviour
     [SerializeField] gameDirector gameDirector;
     public State currentState;
 
+    [Header("SFX")]
+    public AudioSource mooseAudioSource;
+    public AudioClip[] mooseSFXClips;
+
+    [Header("Audio Controls")]
+    [Range(0f, 1f)] public float MooseClip = 1f; // volume global (inspector)
+
+
     [Header("Cooldown after Chase -> Wander")]
     [Tooltip("Temps (s) pendant lequel le moose ne peut pas devenir Alert après être passé de Chase à Wander.")]
     [SerializeField] private float alertCooldownAfterChase = 5f;
     private float lastChaseExitTime = -Mathf.Infinity;
 
+    private Coroutine sfxCoroutine;
+
     private void Awake()
     {
-        
+
+    }
+    private void Start()
+    {
+        // Démarre la coroutine une seule fois
+        if (sfxCoroutine == null)
+            sfxCoroutine = StartCoroutine(SFX());
     }
 
     void Update()
-    {
+    { 
         RunStateMachine();
     }
 
@@ -62,10 +80,27 @@ public class StateManager : MonoBehaviour
         {
             Debug.Log("Player has been caught by the moose! Game Over.");
             gameDirector.isPlayerDead = true;
-            gameDirector.GameOver();
-
         }
     }
-    
+
+    private IEnumerator SFX() // Coroutine pour jouer des sons aléatoires du moose à intervalles aléatoires
+    {
+        Debug.Log("SFX Coroutine started.");
+        if (mooseAudioSource == null || mooseSFXClips == null || mooseSFXClips.Length == 0)
+        yield break;
+        mooseAudioSource.volume = MooseClip; // applique le volume global défini dans l'inspector
+        while (true)
+        {
+            int randomSFX = Random.Range(0, mooseSFXClips.Length);
+            AudioClip clip = mooseSFXClips[randomSFX];
+            if (clip != null)
+                mooseAudioSource.PlayOneShot(clip);
+
+            float waitSeconds = Random.Range(30f, 120f);
+            yield return new WaitForSecondsRealtime(waitSeconds);
+
+            
+        }
+    }
 }
 

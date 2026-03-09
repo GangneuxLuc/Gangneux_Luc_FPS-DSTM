@@ -816,6 +816,7 @@ GameObject:
   - component: {fileID: 5242453746562800783}
   - component: {fileID: 5917962962696611904}
   - component: {fileID: 8503692374576884610}
+  - component: {fileID: 695076735041566655}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -924,7 +925,37 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5917962962696611904}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 695076735041566655}
+        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &695076735041566655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5637420734851230580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd13276825b3cfa4082115ae4077bf62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  isPaused: 0
+  sceneName: 
+  Screamer: {fileID: 0}
+  EndMenu: {fileID: 0}
+  gameOverUIPrefab: {fileID: 0}
+  PauseMenu: {fileID: 0}
 --- !u!1 &6174909218980670697
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,6 +1107,7 @@ GameObject:
   - component: {fileID: 7784526208671407398}
   - component: {fileID: 3933055634359468108}
   - component: {fileID: 8284178452960496124}
+  - component: {fileID: 6877177752543253618}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -1184,7 +1216,37 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3933055634359468108}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6877177752543253618}
+        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
+        m_MethodName: TitleStartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6877177752543253618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6674923852613886658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd13276825b3cfa4082115ae4077bf62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  isPaused: 0
+  sceneName: 
+  Screamer: {fileID: 0}
+  EndMenu: {fileID: 0}
+  gameOverUIPrefab: {fileID: 0}
+  PauseMenu: {fileID: 0}
 --- !u!1 &7562476944596008880
 GameObject:
   m_ObjectHideFlags: 0

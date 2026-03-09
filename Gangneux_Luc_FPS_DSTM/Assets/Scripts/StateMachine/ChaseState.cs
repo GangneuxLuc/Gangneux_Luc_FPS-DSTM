@@ -7,28 +7,35 @@ public class ChaseState : State
     [Header("Chase State Settings")]
     public State wanderState;
     public float mooseChaseDuration = 7f;
-    bool isChasing = false;
-    bool isChaseOver = false;
+
+    private bool isChaseOver = false;
     private Coroutine chaseCoroutine;
 
-    private void Start()
+    private void OnEnable()
     {
-        // Ne pas démarrer la coroutine ici sans garde
-        isChasing = true; // déclenche la logique de chase, la coroutine ne sera démarrée qu'une fois
+        // Réinitialiser l'état à chaque activation du State pour garantir
+        // que la coroutine démarre correctement quand on entre en Chase.
+        isChaseOver = false;
+        // chaseCoroutine laissé tel quel ; RunCurrentState démarre la coroutine si null
     }
 
     public override State RunCurrentState()
     {
-        // démarre la coroutine une seule fois lorsqu'on est en train de chasser
-        if (isChasing && chaseCoroutine == null)
+        // démarre la coroutine une seule fois lorsqu'on entre dans l'état
+        if (chaseCoroutine == null)
         {
             chaseCoroutine = StartCoroutine(ChaseBehavior());
         }
+
         if (isChaseOver)
         {
             Debug.Log("ChaseState: Chase is over. Transitioning to WanderState...");
-            StopCoroutine(chaseCoroutine);
-            isChasing = false;
+            // nettoyage : ne jamais StopCoroutine(null)
+            if (chaseCoroutine != null)
+            {
+                StopCoroutine(chaseCoroutine);
+                chaseCoroutine = null;
+            }
             isChaseOver = false;
             return wanderState;
         }
@@ -43,9 +50,18 @@ public class ChaseState : State
         }
     }
 
+    private void OnDisable()
+    {
+        // Arrêter proprement la coroutine si l'état est désactivé
+        if (chaseCoroutine != null)
+        {
+            StopCoroutine(chaseCoroutine);
+            chaseCoroutine = null;
+        }
+    }
+
     IEnumerator ChaseBehavior()
     {
-        // garde une référence locale de l'agent et du joueur
         if (agent == null)
         {
             Debug.LogError("ChaseState: NavMeshAgent is null");
@@ -66,22 +82,15 @@ public class ChaseState : State
         float startTime = Time.time;
         while (Time.time - startTime < mooseChaseDuration)
         {
-            // met à jour la destination pendant la poursuite
             agent.SetDestination(player.transform.position);
             yield return null;
         }
 
+        // Fin normale de la coroutine
+        agent.speed = mooseSpeed; // réinitialise la vitesse
+        agent.ResetPath(); // stoppe le mouvement actuel pour une transition propre
         isChaseOver = true;
         chaseCoroutine = null;
-
-        if (isChaseOver)
-        {
-            agent.speed = mooseSpeed; // réinitialise la vitesse du moose après la poursuite
-            agent.ResetPath(); // stoppe le mouvement actuel pour éviter les comportements non voulus lors de la transition vers le WanderState
-        }
-
         yield break;
     }
-
- 
 }

@@ -48,7 +48,7 @@ namespace Character
         private void HandleMouseLook()
         {
             // Utilise le flag global défini dans gameDirector pour bloquer les entrées
-            if (!gameDirector.inputsEnabled) return;
+           // if (!gameDirector.inputsEnabled) return;
 
             mouseX = Input.GetAxis("Mouse X");
             mouseY = Input.GetAxis("Mouse Y");

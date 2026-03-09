@@ -23,6 +23,7 @@ public class WanderState : State
         isWandering = false;
         canSmellPlayer = false;
         smellTimer = 0f;
+        agent.speed = mooseSpeed; // Assure que la vitesse est correctement appliquée à l'entrée dans WanderState
     }
 
     public override State RunCurrentState()
@@ -43,13 +44,8 @@ public class WanderState : State
                 StopCoroutine(wanderCoroutine);
                 wanderCoroutine = null;
             }
-
-            // Nettoyage d'état interne
             isWandering = false;
-
-            // Réinitialise le flag local si besoin (ne le remettez pas true ici)
             canSmellPlayer = false;
-         
             return alertState;
         }
 
@@ -85,28 +81,25 @@ public class WanderState : State
     Vector3 GetRandomNavMeshLocation(float radius)
     {
         Debug.Log("Finding random NavMesh location...");
-        // Pick a random direction
+        // Choisit une direction aléatoire dans une sphère de rayon défini
         Vector3 randomDirection = Random.insideUnitSphere * radius;
         randomDirection += transform.position;
 
-        // Sample the NavMesh to find le point valide le plus proche
+        // Sample le NavMesh pour trouver le point valide le plus proche
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
         {
             return hit.position;
         }
-
-        // Fallback: stay in place if no valid point found
         return transform.position;
     }
 
     void SmellZone()
     {
-        // Interprétation : l'utilisateur veut une sphère dont le DIAMÈTRE == mooseDetectionRadius
         float detectionRadius = mooseDetectionRadius * 0.5f;
         Vector3 center = transform.position + Vector3.up * eyeHeight;
 
-        // Debug visuel court (Scene view)
+        // Debug visuel 
         Debug.DrawLine(center, center + Vector3.up * detectionRadius, Color.magenta, 0.1f);
 
         // OverlapSphere détecte tous les colliders dans la sphère
@@ -137,14 +130,6 @@ public class WanderState : State
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Player detected in WanderState (OnTriggerEnter)!");
-            
-        }
-    }
 
     private void OnDrawGizmos()
     {

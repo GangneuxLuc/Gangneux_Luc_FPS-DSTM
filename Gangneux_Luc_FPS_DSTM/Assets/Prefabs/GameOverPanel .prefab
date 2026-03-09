@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 8171764954026123582}
   - component: {fileID: 9060776399510247751}
   - component: {fileID: 6062824112229813891}
-  - component: {fileID: 1525316111598700038}
+  - component: {fileID: 6474065962347866108}
   m_Layer: 5
   m_Name: Quit Game
   m_TagString: Untagged
@@ -200,8 +200,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1525316111598700038}
-        m_TargetAssemblyTypeName: gameDirector, Assembly-CSharp
+      - m_Target: {fileID: 6474065962347866108}
+        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
@@ -212,7 +212,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1525316111598700038
+--- !u!114 &6474065962347866108
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -221,17 +221,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4669135107399139227}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f464fb92fa4b38409da9cfb8aae41e2, type: 3}
+  m_Script: {fileID: 11500000, guid: cd13276825b3cfa4082115ae4077bf62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::gameDirector
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  isPaused: 0
   sceneName: 
+  Screamer: {fileID: 0}
+  EndMenu: {fileID: 0}
   gameOverUIPrefab: {fileID: 0}
-  pauseMenuUIPrefab: {fileID: 0}
-  player: {fileID: 0}
-  moosePrefab: {fileID: 0}
-  recordingsPrefab: {fileID: 0}
-  spawnPoints: []
-  isPlayerDead: 0
+  PauseMenu: {fileID: 0}
 --- !u!1 &4848277275863868981
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,7 +242,7 @@ GameObject:
   - component: {fileID: 1767351528470281906}
   - component: {fileID: 5273013567896765706}
   - component: {fileID: 3261390867807203778}
-  - component: {fileID: 1271724788787966850}
+  - component: {fileID: 1376732435284841611}
   m_Layer: 5
   m_Name: Restart
   m_TagString: Untagged
@@ -354,8 +352,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1271724788787966850}
-        m_TargetAssemblyTypeName: gameDirector, Assembly-CSharp
+      - m_Target: {fileID: 1376732435284841611}
+        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
         m_MethodName: RestartGame
         m_Mode: 1
         m_Arguments:
@@ -366,7 +364,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1271724788787966850
+--- !u!114 &1376732435284841611
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -375,17 +373,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4848277275863868981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f464fb92fa4b38409da9cfb8aae41e2, type: 3}
+  m_Script: {fileID: 11500000, guid: cd13276825b3cfa4082115ae4077bf62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::gameDirector
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  isPaused: 0
   sceneName: 
+  Screamer: {fileID: 0}
+  EndMenu: {fileID: 0}
   gameOverUIPrefab: {fileID: 0}
-  pauseMenuUIPrefab: {fileID: 0}
-  player: {fileID: 0}
-  moosePrefab: {fileID: 0}
-  recordingsPrefab: {fileID: 0}
-  spawnPoints: []
-  isPlayerDead: 0
+  PauseMenu: {fileID: 0}
 --- !u!1 &5791193953509514787
 GameObject:
   m_ObjectHideFlags: 0

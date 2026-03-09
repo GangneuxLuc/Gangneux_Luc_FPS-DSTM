@@ -47,6 +47,7 @@ public class AlertState : State
             {
                 Vector3 dest = GetNearPlayerNavMeshLocation(transform.position, moosewanderRadius);
                 agent.SetDestination(dest);
+                agent.speed = mooseSpeed * mooseDetectionSpeed; // augmente la vitesse pendant l'alert
             }
 
             // Vérification du joueur devant le moose

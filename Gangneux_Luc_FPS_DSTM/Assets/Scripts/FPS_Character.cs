@@ -93,8 +93,6 @@ public class Fps_Character : MonoBehaviour
 
     private void HandleMovement() // Gérer le mouvement du joueur
     {
-       // if (!gameDirector.inputsEnabled) return;
-        // Entrées instantanées (pas de lissage)
         float rawH = Input.GetAxisRaw("Horizontal");
         float rawV = Input.GetAxisRaw("Vertical");
 
@@ -181,32 +179,6 @@ public class Fps_Character : MonoBehaviour
         Recordings.enabled = false;
     }
 
-    private bool IsPlayerInDarkArea() // Vérifier si le joueur est dans une zone sombre
-    {
-        // Cette méthode peut être développée pour détecter les zones sombres et ajuster la santé mentale en conséquence
-        return false; // Placeholder, à remplacer par la logique réelle
-    }
-
-    private float CalculateSanityChange() // Calculer le changement de santé mentale en fonction des conditions du jeu
-    {
-        float sanityChange = 0f;
-        if (IsPlayerInDarkArea())
-        {
-            sanityChange -= playerSanityDecreaseRate * Time.deltaTime; // Perte de santé mentale dans les zones sombres
-        }
-        else
-        {
-            sanityChange += playerSanityIncreaseRate * Time.deltaTime; // Récupération de santé mentale dans les zones éclairées
-        }
-        return sanityChange;
-    }
-
-    private void StealthAfterChase()
-    {
-
-        // Cette méthode peut être développée pour gérer les mécaniques de furtivité après une poursuite avec un ennemi
-    }
-
     private void Sanity() // Gérer la santé mentale du joueur
     {
         playerSanityLevel -= playerSanityDecreaseRate * Time.deltaTime;
@@ -214,7 +186,7 @@ public class Fps_Character : MonoBehaviour
 
     }
 
-    //répéter tant que condition true, arrêter quand false =====
+    //répéter tant que condition true, arrêter quand false 
     private void UpdateAudio()
     {
         // Movement sound: loop tant que le joueur bouge (ajuste pitch si sprint)

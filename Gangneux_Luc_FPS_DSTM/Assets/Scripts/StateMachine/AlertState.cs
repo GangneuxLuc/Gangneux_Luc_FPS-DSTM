@@ -9,10 +9,18 @@ public class AlertState : State
     private bool isPatrolling;
     private Coroutine alertCoroutine;
 
+    public AudioClip mooseAlertClip;
+    public AudioSource mooseAudioSource;
+
     [Header("Detection")]
     [SerializeField] private float eyeHeight = 1.2f;
     [SerializeField] private float fovAngle = 90f; // angle de vision devant le moose
 
+    private void Start()
+    {
+        mooseAudioSource.PlayOneShot(mooseAlertClip); 
+        moose.transform.LookAt(player.transform); // oriente le moose vers le joueur dès l'entrée dans AlertState
+    }
     public override State RunCurrentState()
     {
         if (canSeePlayer)

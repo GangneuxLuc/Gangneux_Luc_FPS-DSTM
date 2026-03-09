@@ -1,11 +1,14 @@
 using System.Collections;
 using Unity.AppUI.UI;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class StateManager : MonoBehaviour
 {
     [SerializeField] gameDirector gameDirector;
     public State currentState;
+
+    public NavMeshAgent agent;
 
     [Header("SFX")]
     public AudioSource mooseAudioSource;
@@ -30,7 +33,7 @@ public class StateManager : MonoBehaviour
     {
         // Démarre la coroutine une seule fois
         if (sfxCoroutine == null)
-            sfxCoroutine = StartCoroutine(SFX());
+            sfxCoroutine = StartCoroutine(SFX()); // Assure que la vitesse est correctement appliquée à l'entrée dans le StateManager
     }
 
     void Update()
@@ -41,7 +44,7 @@ public class StateManager : MonoBehaviour
     private void RunStateMachine()
     {
         State nextState = currentState?.RunCurrentState();
-        // ne switcher que si nextState est différent pour éviter re-enabled inutile
+        // ne switcher que si nextState est différent pour éviter de réactiver inutilement
         if (nextState != null && nextState != currentState)
         {
             // Bloquer la transition vers AlertState si le cooldown après Chase est actif
@@ -50,14 +53,14 @@ public class StateManager : MonoBehaviour
                 Debug.Log($"Transition vers AlertState bloquée pendant cooldown ({alertCooldownAfterChase}s).");
                 return;
             }
-
+            agent.speed = 2f; // Assure que la vitesse est correctement appliquée à chaque transition d'état
             SwitchToNextState(nextState);
         }
     }
 
     private void SwitchToNextState(State nextState)
     {
-        // Si on quitte ChaseState pour aller vers WanderState, enregistre le timestamp pour le cooldown
+        // Si on quitte ChaseState pour aller vers WanderState, enregistre le temps pour le cooldown
         if (currentState is ChaseState && nextState is WanderState)
         {
             lastChaseExitTime = Time.time;

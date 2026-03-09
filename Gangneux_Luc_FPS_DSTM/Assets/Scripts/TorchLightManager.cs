@@ -5,7 +5,7 @@ public class TorchLightManager : MonoBehaviour
     [Header("Torch Light Settings")]
     public float BatteryLife = 100f;
     public float BatteryMax = 100f;
-    private float BatteryDrainRate = 2.5f;
+    private float BatteryDrainRate = 2f;
     private Light torchLight;
     private bool lightIsOn = false;
 

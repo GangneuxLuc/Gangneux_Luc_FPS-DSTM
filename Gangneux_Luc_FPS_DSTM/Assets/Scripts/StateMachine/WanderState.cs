@@ -23,7 +23,7 @@ public class WanderState : State
         isWandering = false;
         canSmellPlayer = false;
         smellTimer = 0f;
-        agent.speed = mooseSpeed; // Assure que la vitesse est correctement appliquée à l'entrée dans WanderState
+        agent.speed = 2f; // Assure que la vitesse est correctement appliquée à l'entrée dans WanderState
     }
 
     public override State RunCurrentState()
@@ -80,6 +80,7 @@ public class WanderState : State
 
     Vector3 GetRandomNavMeshLocation(float radius)
     {
+        agent.speed = mooseSpeed; // assure que la vitesse est correctement appliquée pendant le wandering
         Debug.Log("Finding random NavMesh location...");
         // Choisit une direction aléatoire dans une sphère de rayon défini
         Vector3 randomDirection = Random.insideUnitSphere * radius;

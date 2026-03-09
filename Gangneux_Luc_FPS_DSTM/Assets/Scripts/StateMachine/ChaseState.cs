@@ -16,7 +16,6 @@ public class ChaseState : State
         // Réinitialiser l'état à chaque activation du State pour garantir
         // que la coroutine démarre correctement quand on entre en Chase.
         isChaseOver = false;
-        // chaseCoroutine laissé tel quel ; RunCurrentState démarre la coroutine si null
     }
 
     public override State RunCurrentState()
@@ -77,17 +76,19 @@ public class ChaseState : State
             }
         }
 
-        agent.speed = mooseSpeed * 3f;
+        
+        Debug.Log("ChaseState: Starting chase behavior. Moose speed set to " + agent.speed);
 
         float startTime = Time.time;
         while (Time.time - startTime < mooseChaseDuration)
         {
+            agent.speed = mooseSpeed * 3f;
             agent.SetDestination(player.transform.position);
             yield return null;
         }
 
         // Fin normale de la coroutine
-        agent.speed = mooseSpeed; // réinitialise la vitesse
+        agent.speed = 2f; // réinitialise la vitesse
         agent.ResetPath(); // stoppe le mouvement actuel pour une transition propre
         isChaseOver = true;
         chaseCoroutine = null;

@@ -35,7 +35,7 @@ namespace Character
 
         void Start()
         {
-            // Verrouille le curseur pour un contrôle FPS classique
+            // Verrouille le curseur 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -47,8 +47,6 @@ namespace Character
 
         private void HandleMouseLook()
         {
-            // Utilise le flag global défini dans gameDirector pour bloquer les entrées
-           // if (!gameDirector.inputsEnabled) return;
 
             mouseX = Input.GetAxis("Mouse X");
             mouseY = Input.GetAxis("Mouse Y");

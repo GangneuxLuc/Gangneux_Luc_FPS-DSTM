@@ -83,6 +83,7 @@ public class gameDirector : MonoBehaviour
             //Time.timeScale = 0f; // Freeze le jeu
             isGameWon = true;
         }
+       
     }
     void InstantiateRecordings() // Instancie 5 enregistrements parmi les points de spawn définis 
     {
@@ -147,7 +148,11 @@ public class gameDirector : MonoBehaviour
             Debug.Log("Player is dead. Starting Game Over sequence...");
             StartCoroutine(GameOverCoroutine());
             isPlayerDead = false; // Empêche de relancer la coroutine à chaque frame après la mort du joueur
+        }
 
+        else if (player.GetComponent<Fps_Character>().PlayerSanityLevel <= 0)
+        {
+            StartCoroutine(GameOverCoroutine());
         }
     }
 
@@ -158,7 +163,6 @@ public class gameDirector : MonoBehaviour
 
         Debug.Log("Game Over triggered in gameDirector.");
 
-        // inputsEnabled = false; // Désactive les entrées globalement
         mooseAudioSource.PlayOneShot(mooseScreamerClip); // Joue le son de screamer
         GameObject screamer = Instantiate(menuManager.Screamer); // Instancie le prefab
                                                                  // Cherche "UI" 
